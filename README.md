@@ -6,7 +6,7 @@ This script will parse secure/auth logs from local (or remote) system and
 based on fail login attempts will:
 - create unwanted IP list,
 - download already blocked list from MikroTik, 
-- diff both lists
+- compare both lists,
 - add new unwanted IP to Mikrotik block list
 
 Naturally initial run of this script will require some time and resources
