@@ -1,6 +1,6 @@
 # fail2mtblock
 
-FUNCTION
+### FUNCTION
 
 This script will parse secure/auth logs from local (or remote) system and
 based on fail login attempts will:
@@ -17,7 +17,7 @@ Additionally because blocking is maintained by MikroTik router all servers
 are protected.
 
 
-BACKGROUND
+### BACKGROUND
 
 In many cases simple fail2ban-like application will do just fine, whoever
 some small or even home made environments based on ARM boards can choke 
@@ -47,9 +47,7 @@ And because boot-nets tends to be surprisingly well written and optimal,
 after some RST/ICMP messages are just stopping probing.
 
 
-
-
-INSTALL PREPERATION
+### INSTALL PREPERATION
 + Large amount of addreses require use of ssh-key for connecting,
   [best way is to follow-up official MikroTik wiki for that](http://wiki.mikrotik.com/wiki/Use_SSH_to_execute_commands_(DSA_key_login))
 
