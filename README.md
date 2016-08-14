@@ -49,22 +49,29 @@ after some RST/ICMP messages are just stopping probing.
 
 
 
-INSTALL PREPERATION:
-- Large amount of addreses require use of ssh-key for connecting,
-  best way is to follow-up official MikroTik wiki for that:
-http://wiki.mikrotik.com/wiki/Use_SSH_to_execute_commands_(DSA_key_login)
+INSTALL PREPERATION
++ Large amount of addreses require use of ssh-key for connecting,
+  [best way is to follow-up official MikroTik wiki for that](http://wiki.mikrotik.com/wiki/Use_SSH_to_execute_commands_(DSA_key_login))
 
-- To prevent self-block, exceptions of block rules are needed on top of filtering
++ To prevent self-block, exceptions of block rules are needed on top of filtering
+
+```
 /ip firewall filter
 add action=accept chain=input comment="accept exceptions" src-address-list=_exceptions
 add action=accept chain=forward comment="accept exceptions" src-address-list=_exceptions
+```
 
-- Desired IP of excluded hosts should kept as _exceptions list
++ Desired IP of excluded hosts should kept as _exceptions list
+
+```
 /ip firewall address-list
 add address=192.168.88.0/24 comment="exclude from blocking" list=_exceptions
 add address=some_ip_address comment="exclude from blocking" list=_exceptions
+```
 
 - To block traffic pre-configured rules are required at bottom of MikroTik filtering that are use lists
+
+```
 /ip firewall filter
 add action=reject chain=input comment="reject tcp reset" protocol=tcp reject-with=tcp-reset src-address-list=_block
 add action=reject chain=input comment="icmp reset host unreachable" protocol=udp reject-with=icmp-host-unreachable src-address-list=_block
@@ -72,4 +79,4 @@ add action=reject chain=forward comment="icmp reset host unreachable" protocol=u
 add action=reject chain=forward comment="reject tcp reset" protocol=tcp reject-with=tcp-reset src-address-list=_block
 add action=reject chain=forward comment="reject urg flag" protocol=tcp reject-with=tcp-reset tcp-flags=urg
 add action=drop chain=forward comment="reject invalid" connection-state=invalid
-
+```
