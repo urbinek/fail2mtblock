@@ -1,0 +1,71 @@
+#!/bin/sh
+# 
+# 0 tolerance blocking script, it will send IP address to MT firewall after 1
+# bad authentication
+# 
+
+# define MikroTik and ssh-key
+mt_firewall="192.168.88.1"		# domain name works as well
+mt_login="admin-ssh"			# delegated login name for MikroTik
+mt_ssh_key="/root/.ssh/id_dsa"		# absolute path to ssh-key for MikroTik
+mt_block_list="_block"			# name of /ip firewall address-list list
+
+# define files managed by script
+#local_auth=/var/log/auth.log		# auth.log for debian
+local_auth=/var/log/secure 		# secure for cenos/rhel 
+local_authfail=/tmp/local_authfail.list	# filtered $local_auth by fail/invalid 
+local_sorted=/tmp/local_sorted.list	# sorted and simplified $local_authfail
+mt_blocked=/tmp/mt_blocked.list		# currently blocked IP from MikroTik
+mt_todo=/tmp/mt_todo.list		# list of new IP addreses to block
+
+
+# display date+ log string
+function log_echo {
+ echo `date +%Y-%m-%d\ %T` ": $1"
+} 
+
+# connect to SSH via ssh-key
+function ssh_con {
+ ssh -i $mt_ssh_key $mt_login@$mt_firewall "$1"
+} 
+
+# get and filter logs that we want to filter for failed attempts
+# example of logs that we are after looking for"
+# Apr 18 22:06:48 xen sshd[22708]: Failed password for invalid user support from 185.103.252.14 port 41139 ssh2
+# Apr 18 22:06:49 xen sshd[22710]: Invalid user admin123 from 185.103.252.14
+#
+log_echo "Get failed/invalid attempts from logs..."
+grep -i 'failed\|invalid' $local_auth | grep from > $local_authfail
+
+# filter only IP addreses from list
+log_echo "Filter IP addreses from $local_authfail"
+grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' $local_authfail | sort | uniq > $local_sorted
+
+# download MikroTik block list to localhost for quicker compare
+# authentication is done by pre-confitured ssh-key
+# block list should already exist on Mikrotik /ip firewall address-list
+#
+log_echo "Get current MikroTik block list..."
+ssh_con '/ip firewall address-list print where  list='$mt_block_list | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' | sort | uniq > $mt_blocked
+
+# just comparing lists, i've found grep more efficient for that task than diff
+log_echo "Comparing both lists..."
+grep -v -f $mt_blocked $local_sorted > $mt_todo
+
+
+# check if $mt_todo is full
+if [[ -s $mt_todo ]] ; then
+ # if yes, then add to MikroTik
+ log_echo "Adding new IP addreses to block list..."
+  for i in `cat $mt_todo` ; do
+  # add IP to MikroTik block list
+   ssh_con '/ip firewall address-list add address='$i' list='$mt_block_list' comment="Blocked by fail2mtblock script at '`date +%Y-%m-%d`'"'
+
+   log_echo "added $i..."
+  done
+ log_echo "Done!"
+else
+ # if no, then quit
+ log_echo "List is empty... Done!"
+ exit 0
+fi 
