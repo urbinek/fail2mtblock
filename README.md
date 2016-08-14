@@ -38,10 +38,10 @@ service to probe and it is just matter of time until one of zombie will
 find something.
 
 Solution for that was using simple TCP mechanism of RST reply, which is
-standard server reply that mean "There is no service here, go away"
+standard server reply that mean `There is no service here, go away`
 
 Also we can use UDP mechanism of ICMP reset host unreachable, which is
-standard router reply that mean "There is no host here, go away"
+standard router reply that mean `There is no host here, go away`
 
 And because boot-nets tends to be surprisingly well written and optimal, 
 after some RST/ICMP messages are just stopping probing.
