@@ -38,7 +38,7 @@ Also same trick can be use in UDP mechanism of ICMP reset host unreachable, whic
 And because boot-nets tends to be surprisingly well written and optimal,  after some RST/ICMP messages are just stopping probing.
 
 
-### INSTALL PREPERATION
+### INSTALL REQUIRMENTS
 + Large amount of addreses require use of ssh-key for connecting,
   [best way is to follow-up official MikroTik wiki for that](http://wiki.mikrotik.com/wiki/Use_SSH_to_execute_commands_(DSA_key_login))
 
@@ -74,4 +74,24 @@ add action=drop chain=forward comment="reject invalid" connection-state=invalid
 ```
 /tool fetch https://raw.githubusercontent.com/urbinek/fail2mtblock/master/initial_block_list.rsc
 /import file-name="initial_block_list.rsc"
+```
+
+### INSTALL
+
+If above requirements are met, installation can be simply done by 
+```
+cd /opt/
+git clone https://github.com/urbinek/fail2mtblock.git
+cd fail2mtblock/
+chmod +x fail2mtblock 
+```
+
+Script itself can be run manually
+```
+/opt/fail2mtblock/fail2mtblock
+```
+
+But using cron is more efficient, e.g:
+``` 
+# Linux 0 tolerance blocking script for MikroTik                                                                           0 */2 * * *       /opt/fail2mtblock/fail2mtblock >> /var/log/xen2mt_block.log 2>&1
 ```
