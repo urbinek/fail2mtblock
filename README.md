@@ -89,7 +89,7 @@ chmod +x fail2mtblock
 ### CONFIGURATION
 
 For now script needs to be configured manually by defining header section according to comments
-```
+```bash
 # define MikroTik and ssh-key
 mt_firewall="192.168.88.1"		# domain name works as well
 mt_login="admin-ssh"			# delegated login name for MikroTik
