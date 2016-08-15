@@ -7,6 +7,7 @@
 # define MikroTik and ssh-key
 mt_firewall="192.168.88.1"		# domain name works as well
 mt_login="admin-ssh"			# delegated login name for MikroTik
+mt_ssh_port="22"                       # ssh port
 mt_ssh_key="/root/.ssh/id_dsa"		# absolute path to ssh-key for MikroTik
 mt_block_list="_block"			# name of /ip firewall address-list list
 
@@ -26,7 +27,7 @@ function log_echo {
 
 # connect to SSH via ssh-key
 function ssh_con {
- ssh -i $mt_ssh_key $mt_login@$mt_firewall "$1"
+ ssh -p $mt_ssh_port -i $mt_ssh_key $mt_login@$mt_firewall "$1"
 } 
 
 # get and filter logs that we want to filter for failed attempts

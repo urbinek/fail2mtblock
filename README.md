@@ -93,6 +93,7 @@ For now script needs to be configured manually by defining header section accord
 # define MikroTik and ssh-key
 mt_firewall="192.168.88.1"		# domain name works as well
 mt_login="admin-ssh"			# delegated login name for MikroTik
+mt_ssh_port="22"                       # ssh port
 mt_ssh_key="/root/.ssh/id_dsa"		# absolute path to ssh-key for MikroTik
 mt_block_list="_block"			# name of /ip firewall address-list list
 
