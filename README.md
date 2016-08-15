@@ -2,49 +2,38 @@
 
 ### FUNCTION
 
-This script will parse secure/auth logs from local (or remote) system and
-based on fail login attempts will:
+This script will parse secure/auth logs from local (or remote) system and based on fail login attempts will:
 - create unwanted IP list,
 - download already blocked list from MikroTik, 
 - compare both lists,
 - add new unwanted IP to Mikrotik block list
 
-Naturally initial run of this script will require some time and resources
-to parse, whoever each next one with addition of logrotate will require 
-minimum amount of effort to finish.
+Naturally initial run of this script will require some time and resources to parse (which can be avoided, se below), each next run require minimum amount of effort to finish. To best proformance using logrotate is advised.
 
-Additionally because blocking is maintained by MikroTik router all servers
-are protected.
+Additionally because blocking is maintained by MikroTik router all servers are protected.
 
 
 ### BACKGROUND
 
-In many cases simple fail2ban-like application will do just fine, whoever
-some small or even home made environments based on ARM boards can choke 
-on parsing large amount of data due to lack of CPU power or I/O 
+In many cases simple fail2ban-like application will do just fine, whoever some small or even home made environments based on ARM boards can easly choke  on parsing large amount of data due to lack of CPU power or I/O. 
 
-This problem happened to me while ago, when i was using raspberry pi
-as my main home server with public services.
+This problem happened to me while ago, when i was using raspberry pi as my main home server with public services.
 
 Back then I've had to deal with hundred upon thousands login attempts.
 
-Beside resource issues usual iptables blocking scheme wasn't enough because
-doping packet was solution only for one particular IP, and was useless for
-large boot-nets.
+Beside resource issues usual iptables blocking scheme wasn't enough because doping packet was solution only for one particular IP, and was useless for large boot-nets.
 
 Whoever problem wasn't in amount of hosts but visibility of my services.
-By simply dropping connections boot-net still knew that there is some
-service to probe and it is just matter of time until one of zombie will
-find something.
 
-Solution for that was using simple TCP mechanism of RST reply, which is
-standard server reply that mean `There is no service here, go away`
+By simply dropping connections boot-net still knew that there is some service to probe and it is just matter of time until one of zombie will find something.
 
-Also we can use UDP mechanism of ICMP reset host unreachable, which is
-standard router reply that mean `There is no host here, go away`
+Solution for that was using simple TCP mechanism of RST reply, which is standard server reply that mean
+`There is no service here, go away`
 
-And because boot-nets tends to be surprisingly well written and optimal, 
-after some RST/ICMP messages are just stopping probing.
+Also same trick can be use in UDP mechanism of ICMP reset host unreachable, which is standard router reply that mean
+`There is no host here, go away`
+
+And because boot-nets tends to be surprisingly well written and optimal,  after some RST/ICMP messages are just stopping probing.
 
 
 ### INSTALL PREPERATION
@@ -82,5 +71,5 @@ add action=drop chain=forward comment="reject invalid" connection-state=invalid
 + My initial block list with over 3k hosts can be easily added by downloading it directly on MikroTik
 ```
 /tool fetch https://raw.githubusercontent.com/urbinek/fail2mtblock/master/initial_block_list.rsc
-/import file-name="initial_block_list.rsc";
+/import file-name="initial_block_list.rsc"
 ```
