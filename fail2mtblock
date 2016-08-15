@@ -11,12 +11,12 @@ mt_ssh_key="/root/.ssh/id_dsa"		# absolute path to ssh-key for MikroTik
 mt_block_list="_block"			# name of /ip firewall address-list list
 
 # define files managed by script
-#local_auth=/var/log/auth.log		# auth.log for debian
-local_auth=/var/log/secure 		# secure for cenos/rhel 
-local_authfail=/tmp/local_authfail.list	# filtered $local_auth by fail/invalid 
-local_sorted=/tmp/local_sorted.list	# sorted and simplified $local_authfail
-mt_blocked=/tmp/mt_blocked.list		# currently blocked IP from MikroTik
-mt_todo=/tmp/mt_todo.list		# list of new IP addreses to block
+#local_auth="/var/log/auth.log"		# auth.log for debian
+local_auth="/var/log/secure" 		# secure for cenos/rhel 
+local_authfail="/tmp/local_authfail.list"	# filtered $local_auth by fail/invalid 
+local_sorted="/tmp/local_sorted.list"	# sorted and simplified $local_authfail
+mt_blocked="/tmp/mt_blocked.list"		# currently blocked IP from MikroTik
+mt_todo="/tmp/mt_todo.list"		# list of new IP addreses to block
 
 
 # display date+ log string
