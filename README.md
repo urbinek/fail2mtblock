@@ -67,7 +67,7 @@ add address=192.168.88.0/24 comment="exclude from blocking" list=_exceptions
 add address=some_ip_address comment="exclude from blocking" list=_exceptions
 ```
 
-- To block traffic pre-configured rules are required at bottom of MikroTik filtering that are use lists
++ To block traffic pre-configured rules are required at bottom of MikroTik filtering that are use lists
 
 ```
 /ip firewall filter
@@ -77,4 +77,10 @@ add action=reject chain=forward comment="icmp reset host unreachable" protocol=u
 add action=reject chain=forward comment="reject tcp reset" protocol=tcp reject-with=tcp-reset src-address-list=_block
 add action=reject chain=forward comment="reject urg flag" protocol=tcp reject-with=tcp-reset tcp-flags=urg
 add action=drop chain=forward comment="reject invalid" connection-state=invalid
+```
+
++ My initial block list with over 3k hosts can be easily added by downloading it directly on MikroTik
+```
+/tool fetch https://raw.githubusercontent.com/urbinek/fail2mtblock/master/initial_block_list.rsc
+/import file-name="initial_block_list.rsc";
 ```
