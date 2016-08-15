@@ -39,8 +39,8 @@ And because boot-nets tends to be surprisingly well written and optimal,  after 
 
 
 ### INSTALL REQUIRMENTS
-+ Large amount of addreses require use of ssh-key for connecting,
-  [best way is to follow-up official MikroTik wiki for that](http://wiki.mikrotik.com/wiki/Use_SSH_to_execute_commands_(DSA_key_login))
+
++ Large amount of addreses require use of ssh-key for connecting, [best way is to follow-up official MikroTik wiki for that](http://wiki.mikrotik.com/wiki/Use_SSH_to_execute_commands_(DSA_key_login))
 
 + To prevent self-block, exceptions of block rules are needed on top of filtering
 
@@ -86,12 +86,46 @@ cd fail2mtblock/
 chmod +x fail2mtblock 
 ```
 
-Script itself can be run manually
+### CONFIGURATION
+
+For now script needs to be configured manually by defining header section according to comments
+```
+# define MikroTik and ssh-key
+mt_firewall="192.168.88.1"		# domain name works as well
+mt_login="admin-ssh"			# delegated login name for MikroTik
+mt_ssh_key="/root/.ssh/id_dsa"		# absolute path to ssh-key for MikroTik
+mt_block_list="_block"			# name of /ip firewall address-list list
+
+# define files managed by script
+#local_auth=/var/log/auth.log		# auth.log for debian
+local_auth=/var/log/secure 		# secure for cenos/rhel 
+local_authfail=/tmp/local_authfail.list	# filtered $local_auth by fail/invalid 
+local_sorted=/tmp/local_sorted.list	# sorted and simplified $local_authfail
+mt_blocked=/tmp/mt_blocked.list		# currently blocked IP from MikroTik
+mt_todo=/tmp/mt_todo.list		# list of new IP addreses to block
+```
+### USAGE
+ 
+Script itself can be run manually,
 ```
 /opt/fail2mtblock/fail2mtblock
 ```
 
 But using cron is more efficient, e.g:
 ``` 
-# Linux 0 tolerance blocking script for MikroTik                                                                           0 */2 * * *       /opt/fail2mtblock/fail2mtblock >> /var/log/xen2mt_block.log 2>&1
+# Linux 0 tolerance blocking script for MikroTik                                                                           0 */2 * * *       /opt/fail2mtblock/fail2mtblock >> /var/log/fail2mtblock.log 2>&1
+```
+
+### OTHER
+
+Example log from working script
+```
+2016-08-15 11:53:19 : Get failed/invalid attempts from logs...
+2016-08-15 11:53:19 : Filter IP addreses from /tmp/local_authfail.list
+2016-08-15 11:53:19 : Get current MikroTik block list...
+2016-08-15 11:53:28 : Comparing both lists...
+2016-08-15 11:53:29 : Adding new IP addreses to block list...
+2016-08-15 11:53:30 : added 119.205.99.167...
+2016-08-15 11:53:32 : added 162.203.149.43...
+2016-08-15 11:53:32 : Done!
 ```
