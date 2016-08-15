@@ -113,7 +113,8 @@ Script itself can be run manually,
 
 But using cron is more efficient, e.g:
 ``` 
-# Linux 0 tolerance blocking script for MikroTik                                                                           0 */2 * * *       /opt/fail2mtblock/fail2mtblock >> /var/log/fail2mtblock.log 2>&1
+# Linux 0 tolerance blocking script for MikroTik   
+0 */2 * * *       /opt/fail2mtblock/fail2mtblock >> /var/log/fail2mtblock.log 2>&1
 ```
 
 ### OTHER
